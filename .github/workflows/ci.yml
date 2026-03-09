@@ -1,0 +1,53 @@
+name: CI .NET
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches:
+      - 'feature/*'
+      - 'bugfix/*'
+      - 'hotfix/*'
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Configurar cache NuGet
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Instalar .NET SDK LTS
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x' # Altere para a versão LTS usada no projeto
+
+      - name: Restaurar dependências
+        run: dotnet restore PJ_API.sln
+
+      - name: Compilar solução
+        run: dotnet build PJ_API.sln --no-restore --configuration Release
+
+      - name: Detectar projetos de teste
+        id: test-projects
+        run: |
+          echo "##[set-output name=projects;]$(dotnet sln PJ_API.sln list | findstr .Tests.csproj)"
+        shell: pwsh
+
+      - name: Executar testes
+        run: |
+          $testProjects = "${{ steps.test-projects.outputs.projects }}".Split("`n")
+          foreach ($proj in $testProjects) {
+            if ($proj.Trim() -ne "") {
+              dotnet test $proj --no-build --configuration Release
+            }
+          }
+        shell: pwsh
