@@ -31,8 +31,8 @@ jobs:
           dotnet-version: '8.0.x' # Altere para a versão LTS usada no projeto
 
       - name: Restaurar dependências
-        run: dotnet restore PJ_API.sln
+        run: dotnet restore PJ_API.csproj
 
-      - name: Compilar solução
-        run: dotnet build PJ_API.sln --no-restore --configuration Release
+      - name: Compilar projeto
+        run: dotnet build PJ_API.csproj --no-restore --configuration Release
 
