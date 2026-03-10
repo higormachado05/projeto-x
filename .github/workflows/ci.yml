@@ -47,7 +47,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Merge PR na main
-        uses: peter-evans/merge-pull-request@v4
+        uses: peter-evans/merge@v4
         with:
           merge_method: merge
           commit_message: 'Merge automático após aprovação do PR'
