@@ -1,11 +1,15 @@
-using Swashbuckle.AspNetCore;
+using Microsoft.EntityFrameworkCore;
+using PJ_API.Infrastructure.Persistence;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<PJ_API.Domain.Repositories.IClientRepository, PJ_API.Infrastructure.Repositories.ClientRepository>();
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("HEContext")));
+
 // Repositórios
 builder.Services.AddScoped<PJ_API.Domain.Repositories.IClientRepository, PJ_API.Infrastructure.Repositories.ClientRepository>();
 
