@@ -1,5 +1,4 @@
 
-using PJ_API.Application.DTOs;
 
 namespace PJ_API.Application.Queries
 {
