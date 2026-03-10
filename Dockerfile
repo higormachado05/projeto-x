@@ -1,15 +1,19 @@
-# Dockerfile básico para aplicação .NET
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-WORKDIR /app
-EXPOSE 80
-
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+# etapa de build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
-COPY . .
-RUN dotnet restore PJ_API.csproj
-RUN dotnet publish PJ_API.csproj -c Release -o /app/publish
 
-FROM base AS final
+COPY . .
+RUN dotnet restore
+RUN dotnet publish -c Release -o /app/publish
+
+# etapa final
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
+
 COPY --from=build /app/publish .
+
+ENV ASPNETCORE_URLS=http://+:5092
+
+EXPOSE 5092
+
 ENTRYPOINT ["dotnet", "PJ_API.dll"]

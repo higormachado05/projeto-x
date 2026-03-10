@@ -1,0 +1,33 @@
+version: '3.9'
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Ascmh2025_
+    ports:
+      - "1433:1433"
+    networks:
+      - pjnet
+    restart: always
+ 
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pj_api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__HEContext=Server=WEB-ASC-08\SQLEXPRESS;Database=ExpenseControl;User Id=sa;Password=Ascmh2025_;
+    ports:
+      - "5000:80"
+    depends_on:
+      - sqlserver
+    networks:
+      - pjnet
+ 
+networks:
+  pjnet:
+    driver: bridge
+ 
