@@ -19,7 +19,7 @@ services:
     container_name: pj_api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=ExpenseControl;User Id=sa;Password=Ascmh2025_;TrustServerCertificate=True;
+      - ConnectionStrings__HEContext=Server=sqlserver;Database=ExpenseControl;User Id=sa;Password=Ascmh2025_;TrustServerCertificate=True;
     ports:
       - "5000:80"
     depends_on:
