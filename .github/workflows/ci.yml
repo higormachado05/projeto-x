@@ -45,7 +45,7 @@ merge-to-main:
     - name: Checkout código
       uses: actions/checkout@v4
       with:
-        token: ${{ plIQtifP1k8NXqrb0uLn3tqm6oIvkMt4ImGyVzPE5ASUaQq78l1gZN29nK240HWI}}
+        token: ${{ secrets.GITHUB_TOKEN }}
     - name: Merge PR na main
       uses: peter-evans/merge@v4
       with:
