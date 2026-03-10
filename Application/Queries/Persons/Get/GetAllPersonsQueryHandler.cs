@@ -4,18 +4,18 @@ using PJ_API.Domain.Entities;
 
 namespace PJ_API.Application.Handlers
 {
-    public class GetAllPersonsHandler
+    public class GetAllPersonsQueryHandler
     {
         private readonly IPersonRepository _repository;
-        public GetAllPersonsHandler(IPersonRepository repository)
+        public GetAllPersonsQueryHandler(IPersonRepository repository)
         {
             _repository = repository;
         }
 
-        public GetAllPersonsResult Handle(GetAllPersonsQuery query)
+        public GetAllPersonsQueryResult Handle(GetAllPersonsQuery query)
         {
             var persons = _repository.GetAll();
-            return new GetAllPersonsResult { Persons = persons };
+            return new GetAllPersonsQueryResult { Persons = persons };
         }
     }
 }
