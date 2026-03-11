@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="PJ_API.csproj" />
+  <Project Path="PJ_API.Tests/PJ_API.Tests.csproj" />
 </Solution>
