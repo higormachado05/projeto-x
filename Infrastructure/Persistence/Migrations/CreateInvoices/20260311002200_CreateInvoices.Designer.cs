@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PJ_API.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace PJ_API.Infrastructure.Persistence.Migrations
+namespace PJ_API.Infrastructure.Persistence.Migrations.CreateInvoices
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260311002200_CreateInvoices")]
+    partial class CreateInvoices
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -103,56 +106,6 @@ namespace PJ_API.Infrastructure.Persistence.Migrations
                     b.ToTable("Invoice");
                 });
 
-            modelBuilder.Entity("PJ_API.Domain.Entities.InvoiceItem", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("Hours")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<Guid>("InvoiceId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("WorkDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("InvoiceId");
-
-                    b.ToTable("InvoiceItem");
-                });
-
-            modelBuilder.Entity("PJ_API.Domain.Entities.Reminder", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("ReminderDay")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Value")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
-
-                    b.ToTable("Reminder");
-                });
-
             modelBuilder.Entity("PJ_API.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -234,28 +187,6 @@ namespace PJ_API.Infrastructure.Persistence.Migrations
                     b.Navigation("Company");
                 });
 
-            modelBuilder.Entity("PJ_API.Domain.Entities.InvoiceItem", b =>
-                {
-                    b.HasOne("PJ_API.Domain.Entities.Invoice", "Invoice")
-                        .WithMany("InvoiceItems")
-                        .HasForeignKey("InvoiceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Invoice");
-                });
-
-            modelBuilder.Entity("PJ_API.Domain.Entities.Reminder", b =>
-                {
-                    b.HasOne("PJ_API.Domain.Entities.Company", "Company")
-                        .WithMany("Reminders")
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-                });
-
             modelBuilder.Entity("PJ_API.Domain.Entities.WorkSession", b =>
                 {
                     b.HasOne("PJ_API.Domain.Entities.Company", "Company")
@@ -271,14 +202,7 @@ namespace PJ_API.Infrastructure.Persistence.Migrations
                 {
                     b.Navigation("Invoices");
 
-                    b.Navigation("Reminders");
-
                     b.Navigation("WorkSessions");
-                });
-
-            modelBuilder.Entity("PJ_API.Domain.Entities.Invoice", b =>
-                {
-                    b.Navigation("InvoiceItems");
                 });
 
             modelBuilder.Entity("PJ_API.Domain.Entities.User", b =>
