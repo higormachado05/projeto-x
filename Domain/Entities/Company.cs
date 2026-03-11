@@ -15,5 +15,6 @@ namespace PJ_API.Domain.Entities
 
         public ICollection<WorkSession> WorkSessions { get; set; } = new List<WorkSession>();
         public ICollection<Invoice> Invoices { get; set; } = new List<Invoice>();
+        public ICollection<Reminder> Reminders { get; set; } = new List<Reminder>();
     }
 }
