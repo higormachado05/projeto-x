@@ -11,6 +11,12 @@ services:
     networks:
       - pjnet
     restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P Ascmh2025_ -Q 'SELECT 1' -No -C || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
  
   api:
     build:
@@ -21,9 +27,10 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__HEContext=Server=sqlserver;Database=ExpenseControl;User Id=sa;Password=Ascmh2025_;TrustServerCertificate=True;
     ports:
-      - "5000:80"
+      - "5001:5092"
     depends_on:
-      - sqlserver
+      sqlserver:
+        condition: service_healthy
     networks:
       - pjnet
  

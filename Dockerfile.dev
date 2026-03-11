@@ -1,0 +1,7 @@
+FROM mcr.microsoft.com/dotnet/sdk:10.0
+WORKDIR /src
+
+ENV ASPNETCORE_URLS=http://+:5092
+ENV DOTNET_USE_POLLING_FILE_WATCHER=1
+
+EXPOSE 5092
