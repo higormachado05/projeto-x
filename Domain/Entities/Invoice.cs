@@ -13,5 +13,7 @@ namespace PJ_API.Domain.Entities
         public DateTime CreatedAt { get; set; }
 
         public Company Company { get; set; } = null!;
+
+        public ICollection<InvoiceItem> InvoiceItems { get; set; } = new List<InvoiceItem>();
     }
 }
