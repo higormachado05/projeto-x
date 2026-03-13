@@ -17,13 +17,8 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
-if (app.Environment.IsDevelopment())
-{
-	app.UseSwagger();
-	app.UseSwaggerUI();
-}
-
-app.UseHttpsRedirection();
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseAuthorization();
 
@@ -32,7 +27,21 @@ app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate();
+    var retries = 10;
+    while (retries > 0)
+    {
+        try
+        {
+            db.Database.Migrate();
+            break;
+        }
+        catch
+        {
+            retries--;
+            if (retries == 0) throw;
+            Thread.Sleep(3000);
+        }
+    }
 }
 
 app.Run();
