@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using PJ_API.Application.Commands.Authentication.Login;
-using PJ_API.Application.DTOs;
 
 namespace PJ_API.Controllers
 {
@@ -9,19 +8,22 @@ namespace PJ_API.Controllers
     [Route("api/[controller]")]
     public class AuthenticationController : ControllerBase
     {
-        private readonly IMediator mediator;
-
+        private readonly IMediator _mediator;
 
         public AuthenticationController(IMediator mediator)
         {
-            this.mediator = mediator;
+            _mediator = mediator;
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginCommand command)
+        public async Task<IActionResult> Login([FromBody] LoginCommand command, CancellationToken cancellationToken)
         {
-            
-            return this.Ok(await this.mediator.Send(command));
+            var response = await _mediator.Send(command, cancellationToken);
+
+            if (response is null)
+                return Unauthorized(new { message = "E-mail ou senha inválidos." });
+
+            return Ok(response);
         }
     }
 }
