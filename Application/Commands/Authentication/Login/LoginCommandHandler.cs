@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using PJ_API.Application.DTOs;
+using PJ_API.Application.Responses;
 using PJ_API.Domain.Entities;
 using PJ_API.Infrastructure.Persistence;
 using Microsoft.IdentityModel.Tokens;
@@ -18,13 +18,13 @@ namespace PJ_API.Application.Commands.Authentication.Login
         private readonly string _jwtIssuer;
         private readonly string _jwtAudience;
 
-        public LoginCommandHandler(AppDbContext context)
+        public LoginCommandHandler(AppDbContext context, Microsoft.Extensions.Configuration.IConfiguration configuration)
         {
             _context = context;
             _passwordHasher = new PasswordHasher<User>();
-            _jwtSecret = "efb8e1f9980d47bcadfa2d94918adf291ecc6e5171be48f4947ec8199c9bee9e";
-            _jwtIssuer = "PJ_API";
-            _jwtAudience = "PJ_API_USERS";
+            _jwtSecret = configuration["Jwt:Secret"] ?? string.Empty;
+            _jwtIssuer = configuration["Jwt:Issuer"] ?? string.Empty;
+            _jwtAudience = configuration["Jwt:Audience"] ?? string.Empty;
         }
 
         public async Task<LoginResponse?> HandleAsync(LoginCommand command)
