@@ -1,0 +1,13 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - .:/src
+    working_dir: /src
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+      - ConnectionStrings__HEContext=Server=sqlserver;Database=ExpenseControl;User Id=sa;Password=Ascmh2025_;TrustServerCertificate=True;
+    entrypoint: ["dotnet", "watch", "run", "--no-hot-reload", "--urls", "http://+:5092"]
