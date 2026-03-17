@@ -1,5 +1,9 @@
+
 using Microsoft.EntityFrameworkCore;
 using PJ_API.Infrastructure.Persistence;
+using PJ_API.Application.Commands.Authentication.Login;
+using Application.Commands.User.Create;
+using MediatR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +16,13 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Repositórios
 builder.Services.AddScoped<PJ_API.Domain.Repositories.IClientRepository, PJ_API.Infrastructure.Repositories.ClientRepository>();
+
+// Handlers
+
+builder.Services.AddScoped<LoginCommandHandler>();
+builder.Services.AddScoped<CreateUserCommandHandler>();
+
+
 
 var app = builder.Build();
 
