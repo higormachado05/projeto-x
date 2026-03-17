@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PJ_API.Application.Commands.Authentication.Login;
 using PJ_API.Application.DTOs;
 
@@ -9,19 +8,21 @@ namespace PJ_API.Controllers
     [Route("api/[controller]")]
     public class AuthenticationController : ControllerBase
     {
-        private readonly IMediator mediator;
 
+        private readonly LoginCommandHandler _loginHandler;
 
-        public AuthenticationController(IMediator mediator)
+        public AuthenticationController(LoginCommandHandler loginHandler)
         {
-            this.mediator = mediator;
+            _loginHandler = loginHandler;
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginCommand command)
         {
-            
-            return this.Ok(await this.mediator.Send(command));
+            var result = await _loginHandler.HandleAsync(command);
+            if (result == null)
+                return Unauthorized();
+            return Ok(result);
         }
     }
 }

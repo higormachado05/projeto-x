@@ -3,6 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using PJ_API.Application.DTOs;
 using PJ_API.Domain.Entities;
 using PJ_API.Infrastructure.Persistence;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace PJ_API.Application.Commands.Authentication.Login
 {
@@ -10,11 +14,17 @@ namespace PJ_API.Application.Commands.Authentication.Login
     {
         private readonly AppDbContext _context;
         private readonly PasswordHasher<User> _passwordHasher;
+        private readonly string _jwtSecret;
+        private readonly string _jwtIssuer;
+        private readonly string _jwtAudience;
 
         public LoginCommandHandler(AppDbContext context)
         {
             _context = context;
             _passwordHasher = new PasswordHasher<User>();
+            _jwtSecret = "efb8e1f9980d47bcadfa2d94918adf291ecc6e5171be48f4947ec8199c9bee9e";
+            _jwtIssuer = "PJ_API";
+            _jwtAudience = "PJ_API_USERS";
         }
 
         public async Task<LoginResponse?> HandleAsync(LoginCommand command)
@@ -25,16 +35,35 @@ namespace PJ_API.Application.Commands.Authentication.Login
             if (user is null)
                 return null;
 
-            var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, command.Password);
 
-            if (result == PasswordVerificationResult.Failed)
+            var valid = BCrypt.Net.BCrypt.Verify(command.Password, user.PasswordHash);
+            if (!valid)
                 return null;
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_jwtSecret);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Name, user.Name),
+                    new Claim(ClaimTypes.Email, user.Email)
+                }),
+                Expires = DateTime.UtcNow.AddHours(2),
+                Issuer = _jwtIssuer,
+                Audience = _jwtAudience,
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var jwt = tokenHandler.WriteToken(token);
 
             return new LoginResponse
             {
                 Id = user.Id,
                 Name = user.Name,
-                Email = user.Email
+                Email = user.Email,
+                Token = jwt
             };
         }
     }
