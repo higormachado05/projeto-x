@@ -20,13 +20,13 @@ namespace PJ_API.Application.Commands.Authentication.Login
                 .FirstOrDefaultAsync(u => u.Email.ToLower() == normalizedEmail);
 
             if (user is null)
-                throw new KeyNotFoundException("Usu·rio n„o encontrado");
+                return null; 
 
             var valid = BCrypt.Net.BCrypt.Verify(command.Password, user.PasswordHash);
             if (!valid)
                 return null;
 
-            return "Usu·rio logado com sucesso";
+            return "Usu√°rio logado com sucesso";
         }
     }
 }
